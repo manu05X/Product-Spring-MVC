@@ -82,8 +82,13 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void addProduct() {
+    public Product addProduct(Product product) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
 
+        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.postForEntity(genericProductUrl,
+                getFakeStoreProductDtoFromProduct(product), FakeStoreProductDto.class);
+
+        return getProductFromFakeStoreProductDto(responseEntity.getBody());
     }
 
     @Override
@@ -106,6 +111,19 @@ public class FakeStoreProductServiceImpl implements ProductService{
 
         product.setPrice(fakeStoreProductDto.getPrice());
         return product;
+
+    }
+
+    //Reverse mapper for adding product
+    private FakeStoreProductDto getFakeStoreProductDtoFromProduct(Product product){
+        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
+
+        fakeStoreProductDto.setTitle(product.getTitle());
+        fakeStoreProductDto.setDesc(product.getDesc());
+        fakeStoreProductDto.setCategory(product.getCategory().getName());
+        fakeStoreProductDto.setPrice(product.getPrice());
+
+        return fakeStoreProductDto;
 
     }
 }
