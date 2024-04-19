@@ -61,6 +61,10 @@ public class ProductController {
         //calling the service
         return productService.getAllProducts();
     }
+    @PostMapping
+    public Product createProduct(@RequestBody Product product){
+        return  productService.addProduct(product);
+    }
 
 //    public String getProductByCategory(String category){
 //
