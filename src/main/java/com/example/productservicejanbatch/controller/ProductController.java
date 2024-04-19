@@ -1,14 +1,15 @@
 package com.example.productservicejanbatch.controller;
 
 
+import com.example.productservicejanbatch.dtos.ExceptionDto;
+import com.example.productservicejanbatch.exceptions.ProductNotFoundException;
 import com.example.productservicejanbatch.models.Product;
 import com.example.productservicejanbatch.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class ProductController {
 //        return productService.getProductById(id);
 //    }
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable("id") Long id){
+    public Product getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
         //@PathVariable("id") is use to map with the request parameter with Long id and Long id will have default NULL value
         //return "Product fetch with id: "+ id;
         return productService.getProductById(id);
@@ -63,6 +64,32 @@ public class ProductController {
 
 //    public String getProductByCategory(String category){
 //
+//    }
+
+    //Method 1 : this is used prefered
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    private ExceptionDto handleProductNotFoundException(ProductNotFoundException e){
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setMessage(e.getMessage());
+        exceptionDto.setStatus("Failure");
+
+        return exceptionDto;
+    }
+
+//    //Method 2
+//    @ExceptionHandler(ProductNotFoundException.class)
+//    private ResponseEntity<ExceptionDto> handleProductNotFoundException(ProductNotFoundException e){
+//
+//        ExceptionDto exceptionDto = new ExceptionDto();
+//        exceptionDto.setMessage(e.getMessage());
+//        exceptionDto.setStatus("Failure");
+//
+//        //Create obj of response entity
+//        ResponseEntity<ExceptionDto> responseEntity = new ResponseEntity<>(exceptionDto,HttpStatus.NOT_FOUND);
+//
+//        return responseEntity;
 //    }
 
 }
@@ -88,4 +115,14 @@ public class ProductController {
  * 2. Field Injection -> Field injection is one of the easiest ways of injecting dependency in a class. A dependency can be injected using @Autowired (or @Inject or @Resource ) annotation.
  * 3. Setter Injection ->
  *
+ */
+
+/**
+ * @ExceptionHandler() : This annotation provided by spring If any exception occour in controller please handles  it
+ *  @ResponseStatus(HttpStatus.NOT_FOUND) -> use to give status as NOT_FOUND
+ *     @ResponseBody -> Use to say that output of the below function should go in response body and status should be NOT_Found
+ *
+ *
+ * As we are handling the Exception in ProductController ther for we are voilating SRP principal of SOLID
+ * So we can add this exception handler into another class called as ControllerAdvice to avoid SRP
  */

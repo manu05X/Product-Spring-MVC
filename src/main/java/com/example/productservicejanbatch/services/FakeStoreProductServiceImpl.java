@@ -1,6 +1,7 @@
 package com.example.productservicejanbatch.services;
 
 import com.example.productservicejanbatch.dtos.FakeStoreProductDto;
+import com.example.productservicejanbatch.exceptions.ProductNotFoundException;
 import com.example.productservicejanbatch.models.Category;
 import com.example.productservicejanbatch.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,8 @@ public class FakeStoreProductServiceImpl implements ProductService{
     //restTemplateBuilder is a webclient provided by spring this is use for http connection
     private RestTemplateBuilder restTemplateBuilder;
 
-    private String getProductUrl = "https://fakestoreapi.com/products/1";//now we need clint to make a call at this url so we use restTemplateBuilder
+    //private String getProductUrl = "https://fakestoreapi.com/products/1";//now we need clint to make a call at this url so we use restTemplateBuilder
+    private String specificProductUrl = "https://fakestoreapi.com/products/{id}";
     private String genericProductUrl = "https://fakestoreapi.com/products";
     @Autowired
     public FakeStoreProductServiceImpl(RestTemplateBuilder restTemplateBuilder){
@@ -43,11 +45,15 @@ public class FakeStoreProductServiceImpl implements ProductService{
 //        return  responseEntity.getBody();
 //    }
     @Override
-    public Product getProductById(Long id) {
+    public Product getProductById(Long id) throws ProductNotFoundException {
 
     RestTemplate restTemplate = restTemplateBuilder.build();
-    ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.getForEntity(getProductUrl, FakeStoreProductDto.class);
+    ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.getForEntity(specificProductUrl, FakeStoreProductDto.class, id);
 
+    if(responseEntity.getBody() == null){
+        //throw an Exception, So we should make our own exception to show the msg
+        throw new ProductNotFoundException("Product Not found for id :" +id);
+    }
     //return "Product Fetch From Fake Service. Id: " + id;
     return  getProductFromFakeStoreProductDto(responseEntity.getBody());
 }
@@ -114,4 +120,13 @@ public class FakeStoreProductServiceImpl implements ProductService{
  *
  *     Here we are using the same i.e getForEntity is used for mapping response from url to obj of Dto
  *      ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.getForEntity(getProductUrl, FakeStoreProductDto.class);
+* */
+
+/**
+ * Who is throwing exception? ans: service
+ * Who should handle it? Contoller
+ * Similar to MVC i.e if cheff is saying that i cannot prepare a specific food item.
+ * who should handle it ? ans: Waiter i.e controller
+ * So write exceptional handler in controller
+ *
 * */
