@@ -54,8 +54,11 @@ public class ProductController {
 
     //@GetMapping("/products")
     @GetMapping()
-    public List<String> getAllProducts(){
-        return Collections.emptyList();
+    public List<Product> getAllProducts(){
+
+        //return Collections.emptyList();
+        //calling the service
+        return productService.getAllProducts();
     }
 
 //    public String getProductByCategory(String category){
