@@ -67,16 +67,16 @@ public class ProductController {
 //    }
 
     //Method 1 : this is used prefered
-    @ExceptionHandler(ProductNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    private ExceptionDto handleProductNotFoundException(ProductNotFoundException e){
-        ExceptionDto exceptionDto = new ExceptionDto();
-        exceptionDto.setMessage(e.getMessage());
-        exceptionDto.setStatus("Failure");
-
-        return exceptionDto;
-    }
+//    @ExceptionHandler(ProductNotFoundException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ResponseBody
+//    private ExceptionDto handleProductNotFoundException(ProductNotFoundException e){
+//        ExceptionDto exceptionDto = new ExceptionDto();
+//        exceptionDto.setMessage(e.getMessage());
+//        exceptionDto.setStatus("Failure");
+//
+//        return exceptionDto;
+//    }
 
 //    //Method 2
 //    @ExceptionHandler(ProductNotFoundException.class)
