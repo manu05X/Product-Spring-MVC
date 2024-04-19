@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.LinkedList;
 import java.util.List;
 @Service("FakeProductService")
 public class FakeStoreProductServiceImpl implements ProductService{
@@ -17,6 +18,7 @@ public class FakeStoreProductServiceImpl implements ProductService{
     private RestTemplateBuilder restTemplateBuilder;
 
     private String getProductUrl = "https://fakestoreapi.com/products/1";//now we need clint to make a call at this url so we use restTemplateBuilder
+    private String genericProductUrl = "https://fakestoreapi.com/products";
     @Autowired
     public FakeStoreProductServiceImpl(RestTemplateBuilder restTemplateBuilder){
         this.restTemplateBuilder = restTemplateBuilder;
@@ -51,8 +53,16 @@ public class FakeStoreProductServiceImpl implements ProductService{
 }
 
     @Override
-    public List<String> getAllProducts() {
-        return null;
+    public List<Product> getAllProducts() {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto[]> responseEntity = restTemplate.getForEntity(genericProductUrl, FakeStoreProductDto[].class);
+        
+        List<Product> productList = new LinkedList<>();
+        for(FakeStoreProductDto fakeStoreProductDto: responseEntity.getBody()){
+            productList.add(getProductFromFakeStoreProductDto(fakeStoreProductDto));
+        }
+
+        return productList;
     }
 
     @Override
@@ -82,6 +92,8 @@ public class FakeStoreProductServiceImpl implements ProductService{
         product.setTitle(fakeStoreProductDto.getTitle());
         product.setDesc(fakeStoreProductDto.getDesc());
 
+        //Mapper to create the object according to 3rd party API i.e fakeStoreAPI
+        //For us category is objects and for fake store it is string, so we have converted to object
         Category category = new Category();
         category.setName(fakeStoreProductDto.getCategory());
         product.setCategory(category);
@@ -91,3 +103,15 @@ public class FakeStoreProductServiceImpl implements ProductService{
 
     }
 }
+
+
+/**
+ * Map<String,Object>
+ * Map<id,1>
+ *
+ *     ObjectMapper - Map the JSON Map to an Object if an error it throws that error
+ *     Most common library is jacson
+ *
+ *     Here we are using the same i.e getForEntity is used for mapping response from url to obj of Dto
+ *      ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.getForEntity(getProductUrl, FakeStoreProductDto.class);
+* */
