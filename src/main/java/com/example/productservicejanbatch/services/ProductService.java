@@ -10,7 +10,7 @@ public interface ProductService {
     Product getProductById(Long id) throws ProductNotFoundException;
     List<Product> getAllProducts();
     void deleteProducts();
-    void deleteProductById(Long id);
+    Product deleteProductById(Long id);
     public Product addProduct(Product product);
     void updateProductById();
 }

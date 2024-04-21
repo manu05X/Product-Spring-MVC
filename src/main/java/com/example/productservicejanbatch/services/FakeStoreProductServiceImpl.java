@@ -7,8 +7,12 @@ import com.example.productservicejanbatch.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpMessageConverterExtractor;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedList;
@@ -77,10 +81,44 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void deleteProductById(Long id) {
+    public Product deleteProductById(Long id) {
+        // Prepare a RestTemplate instance to execute HTTP requests
         RestTemplate restTemplate = restTemplateBuilder.build();
-        restTemplate.delete(specificProductUrl, id);
+
+        // Prepare a request callback to set the accept header for the HTTP request
+        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(FakeStoreProductDto.class);
+
+        // Prepare a response extractor to extract the response entity from the HTTP response
+        ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
+
+        // Execute an HTTP DELETE request to the specific product URL with the provided ID
+        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.execute(
+                specificProductUrl,             // URL of the specific product to be deleted
+                HttpMethod.DELETE,             // HTTP DELETE method
+                requestCallback,               // Request callback to set accept header
+                responseExtractor,             // Response extractor to extract response entity
+                id                             // ID of the product to be deleted
+        );
+
+        // Convert the response body (deleted product) from FakeStoreProductDto to Product object
+        Product deletedProduct = getProductFromFakeStoreProductDto(responseEntity.getBody());
+
+        // Return the deleted product
+        return deletedProduct;
     }
+
+//    public Product deleteProductById(Long id) {
+//        RestTemplate restTemplate = restTemplateBuilder.build();
+//        //restTemplate.delete(specificProductUrl, id);
+//        //we get response in JSON format from http request below in requestCallback
+//        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(FakeStoreProductDto.class);
+//        ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
+//
+//        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.execute(specificProductUrl, HttpMethod.DELETE, requestCallback, responseExtractor, id);
+//
+//        return getProductFromFakeStoreProductDto(responseEntity.getBody());
+//    }
+
 
     @Override
     public Product addProduct(Product product) {

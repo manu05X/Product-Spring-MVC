@@ -24,8 +24,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(Long id) {
-
+    public Product deleteProductById(Long id) {
+        return null;
     }
 
     @Override
