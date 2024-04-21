@@ -66,6 +66,14 @@ public class ProductController {
         return  productService.addProduct(product);
     }
 
+    //@GetMapping("/{id}")
+    @DeleteMapping("/{id}")
+    public void deleteProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
+        //@PathVariable("id") is use to map with the request parameter with mLong id and Long id will have default NULL value
+        //return "Product fetch with id: "+ id;
+        productService.deleteProductById(id);
+    }
+
 //    public String getProductByCategory(String category){
 //
 //    }
