@@ -77,8 +77,9 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void deleteProductById() {
-
+    public void deleteProductById(Long id) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        restTemplate.delete(specificProductUrl, id);
     }
 
     @Override
