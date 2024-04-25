@@ -71,7 +71,7 @@ public class FakeStoreProductServiceImpl implements ProductService{
 
         product.setId(fakeStoreProductDto.getId());
         product.setTitle(fakeStoreProductDto.getTitle());
-        product.setDesc(fakeStoreProductDto.getDesc());
+        product.setDescription(fakeStoreProductDto.getDesc());
 
         //Mapper to create the object according to 3rd party API i.e fakeStoreAPI
         //For us category is objects and for fake store it is string, so we have converted to object
@@ -89,7 +89,7 @@ public class FakeStoreProductServiceImpl implements ProductService{
         FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
 
         fakeStoreProductDto.setTitle(product.getTitle());
-        fakeStoreProductDto.setDesc(product.getDesc());
+        fakeStoreProductDto.setDesc(product.getDescription());
         fakeStoreProductDto.setCategory(product.getCategory().getName());
         fakeStoreProductDto.setPrice(product.getPrice());
 

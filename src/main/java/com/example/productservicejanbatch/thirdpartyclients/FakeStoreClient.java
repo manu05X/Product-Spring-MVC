@@ -5,6 +5,7 @@ import com.example.productservicejanbatch.exceptions.ProductNotFoundException;
 import com.example.productservicejanbatch.models.Category;
 import com.example.productservicejanbatch.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,19 @@ public class FakeStoreClient {
     private RestTemplateBuilder restTemplateBuilder;
 
     //private String getProductUrl = "https://fakestoreapi.com/products/1";//now we need clint to make a call at this url so we use restTemplateBuilder
-    private String specificProductUrl = "https://fakestoreapi.com/products/{id}";
-    private String genericProductUrl = "https://fakestoreapi.com/products";
+   // private String specificProductUrl = "https://fakestoreapi.com/products/{id}";
+    private String specificProductUrl;
+    //below is sinilar to field Injection , but this is not recommended above one is better way to use
+    @Value("${generic.api.url}")
+    private String genericProductUrl;
+//    @Autowired
+//    public FakeStoreClient(RestTemplateBuilder restTemplateBuilder){
+//        this.restTemplateBuilder = restTemplateBuilder;
+//    }
     @Autowired
-    public FakeStoreClient(RestTemplateBuilder restTemplateBuilder){
+    public FakeStoreClient(RestTemplateBuilder restTemplateBuilder, @Value("${fakestore.api.url}") String fakestoreurl){
         this.restTemplateBuilder = restTemplateBuilder;
+        this.specificProductUrl = fakestoreurl;
     }
 
     //    @Override
