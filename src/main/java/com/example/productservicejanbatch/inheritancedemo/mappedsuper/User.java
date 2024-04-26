@@ -7,6 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
+/**
+ * @MappedSuperclass - It will create table only for child with columns inherited from Parent
+ */
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +19,5 @@ public class User {
     private String name;
 }
 
-/**
- * @MappedSuperclass - It will create table only for child with columns inherited from Parent
- */
+
 
