@@ -26,7 +26,7 @@ public class ProductController {
     //2.This is constructor Injection and it is recommended to use
     private ProductService productService;
     @Autowired
-    public ProductController (@Qualifier("FakeProductService") ProductService productService){
+    public ProductController (@Qualifier("SelfProductService") ProductService productService){
         this.productService = productService;
     }
 
