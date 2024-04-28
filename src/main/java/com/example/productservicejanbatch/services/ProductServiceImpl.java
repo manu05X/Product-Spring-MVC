@@ -2,6 +2,7 @@ package com.example.productservicejanbatch.services;
 
 import com.example.productservicejanbatch.models.Category;
 import com.example.productservicejanbatch.models.Product;
+import com.example.productservicejanbatch.repos.CategoryRepo;
 import com.example.productservicejanbatch.repos.ProductRepo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,14 @@ import java.util.Optional;
 @Service("SelfProductService")
 public class ProductServiceImpl implements ProductService {
     private ProductRepo productRepo;
-    public ProductServiceImpl(ProductRepo productRepo){
+    private CategoryRepo categoryRepo;
+
+//    public ProductServiceImpl(ProductRepo productRepo){
+//        this.productRepo = productRepo;
+//    }
+    public ProductServiceImpl(ProductRepo productRepo, CategoryRepo categoryRepo){
         this.productRepo = productRepo;
+        this.categoryRepo = categoryRepo;
     }
     @Override
     public Product getProductById(Long id){
@@ -49,13 +56,49 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    /**
+     * We are given a product by our client, we need to save it in our system(DB)
+     *
+     * a> Client doesnot give us id of product category as its our internal so they dont know
+     * b> So first get the product category Name from the details provided by client.
+     * c> Check if is present in our system
+     * d> if Present then add the product in that Category
+     *   else
+     *      -Create new Category as per Product Detail
+     *      -Then add the product in that Category
+     *  e> Now save the Product and return
+     *
+     */
     @Override
     public Product addProduct(Product product) {
-        return null;
+        //return null;
+        //return this.productRepo.save(product);
+        //As product is dependent on Category so we must first check if it exists or not
+
+        Optional<Category> categoryOptional = this.categoryRepo.findByName(product.getCategory().getName());
+        if(categoryOptional.isPresent()){
+            product.setCategory(categoryOptional.get());
+        }else {
+            //if not present in list previously then create it. It migth be the case that its first of its kind in list
+            Category category = categoryRepo.save(product.getCategory());
+            product.setCategory(category);
+        }
+        //saving
+       return this.productRepo.save(product);
     }
+
+    /*
+    * C - for Create -> we will use save
+    * U - for update ?
+    * R - for read -> find by, get by
+    * D - for delete -> delete By
+    *
+    * The save will internally take care of update
+    * */
 
     @Override
     public void updateProductById() {
 
     }
 }
+

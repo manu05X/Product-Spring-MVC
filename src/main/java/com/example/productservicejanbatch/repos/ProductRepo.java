@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface ProductRepo extends JpaRepository <Product, Long>{
     //Optional because in some case id can be null
     Optional<Product> findById(Long id);
+    //even if we comment the above line we will  ot get error because Jpa Repo take care of that
 
 }
