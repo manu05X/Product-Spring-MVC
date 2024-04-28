@@ -1,16 +1,19 @@
 package com.example.productservicejanbatch.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Table;
+import lombok.*;
 
 import java.util.List;
 
+@Table(name = "product")
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product extends BaseModel {
     private String title;
     private String description;
