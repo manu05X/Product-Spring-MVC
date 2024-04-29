@@ -1,11 +1,13 @@
 package com.example.productservicejanbatch.services;
 
+import com.example.productservicejanbatch.exceptions.ProductNotFoundException;
 import com.example.productservicejanbatch.models.Category;
 import com.example.productservicejanbatch.models.Product;
 import com.example.productservicejanbatch.repos.CategoryRepo;
 import com.example.productservicejanbatch.repos.ProductRepo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -97,8 +99,28 @@ public class ProductServiceImpl implements ProductService {
     * */
 
     @Override
-    public void updateProductById() {
+    @Transactional
+    public void updateProductById(Long id, Product product) throws ProductNotFoundException {
+        Optional<Product> existingProductOptional = this.productRepo.findById(id);
+        if(existingProductOptional.isPresent()){
+            Product existingProduct = new Product();
 
+            existingProduct.setTitle(product.getTitle());
+            existingProduct.setDescription(product.getDescription());
+            existingProduct.setPrice(product.getPrice());
+
+            Optional<Category> categoryOptional = this.categoryRepo.findByName(product.getCategory().getName());
+            if(categoryOptional.isPresent()){
+                existingProduct.setCategory(categoryOptional.get());
+            }else {
+                //if not present in list previously then create it. It migth be the case that its first of its kind in list
+                Category category = categoryRepo.save(product.getCategory());
+                product.setCategory(category);
+            }
+            productRepo.save(existingProduct);
+        } else {
+            throw new ProductNotFoundException("Product not found");
+        }
     }
 }
 

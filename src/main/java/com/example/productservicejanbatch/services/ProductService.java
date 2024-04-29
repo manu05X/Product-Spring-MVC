@@ -12,5 +12,6 @@ public interface ProductService {
     void deleteProducts();
     Product deleteProductById(Long id);
     public Product addProduct(Product product);
-    void updateProductById();
+    //void updateProductById();
+    void updateProductById(Long id, Product product) throws ProductNotFoundException;
 }

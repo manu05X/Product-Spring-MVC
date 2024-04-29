@@ -62,8 +62,8 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void updateProductById() {
-
+    public void updateProductById(Long id, Product product) throws ProductNotFoundException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private Product getProductFromFakeStoreProductDto(FakeStoreProductDto fakeStoreProductDto){
