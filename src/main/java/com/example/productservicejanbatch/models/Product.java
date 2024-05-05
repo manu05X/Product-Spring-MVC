@@ -17,7 +17,8 @@ public class Product extends BaseModel {
     private Long price;
     @ManyToOne
     private Category category;
-
+    private int rating;
+    //private int quantity;
     //private List<String> allowedUser;
 }
 /**
