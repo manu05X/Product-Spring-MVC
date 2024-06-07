@@ -13,7 +13,7 @@
 - This is done by @MappedSuperclass.
 - @MappedSuperclass -> It will not create the table of the user it will just create the table of its child where it has been mapped and put all its attribut to the column of it's child
 
-### Now if we need simple USER then what ti do?
+### Now if we need simple USER then what to do?
 - Here we will create table per class (tpc_name) and provide a custom name to the Entity.
 - Table per class means - The DB will create table for all entites with columns inherited from Parent.
   - That is DB is trying to make each and every table independant and isolated 

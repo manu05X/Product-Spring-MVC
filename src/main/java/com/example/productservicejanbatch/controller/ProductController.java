@@ -4,6 +4,7 @@ package com.example.productservicejanbatch.controller;
 import com.example.productservicejanbatch.dtos.ExceptionDto;
 import com.example.productservicejanbatch.exceptions.ProductNotFoundException;
 import com.example.productservicejanbatch.models.Product;
+import com.example.productservicejanbatch.security.services.AuthenticationService;
 import com.example.productservicejanbatch.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -25,9 +27,15 @@ public class ProductController {
     //Time stamp 1:20
     //2.This is constructor Injection and it is recommended to use
     private ProductService productService;
+
+    //For Authentication service
+    private AuthenticationService authenticationService;
+
+
     @Autowired
-    public ProductController (@Qualifier("SelfProductService") ProductService productService){
+    public ProductController (@Qualifier("SelfProductService") ProductService productService, AuthenticationService authenticationService){
         this.productService = productService;
+        this.authenticationService = authenticationService;
     }
 
     /**3.Setter Injection -> not recommended . At runtime it gives nullpoint exception. for example we are making a cll before setting up the productService so at
@@ -47,7 +55,13 @@ public class ProductController {
 //        return productService.getProductById(id);
 //    }
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
+    public Product getProductById(@RequestHeader("AuthenticationToken") String token,
+                                  @PathVariable("id") Long id) throws ProductNotFoundException, AccessDeniedException {
+        //Checking for Auth Token
+        if(!authenticationService.authenticate(token)){
+            throw new AccessDeniedException("You are not authorized");
+        }
+
         //@PathVariable("id") is use to map with the request parameter with Long id and Long id will have default NULL value
         //return "Product fetch with id: "+ id;
         return productService.getProductById(id);
